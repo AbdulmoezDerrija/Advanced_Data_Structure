@@ -1,3 +1,4 @@
+import java.rmi.NotBoundException;
 import java.util.*;
 
 public class BST {
@@ -112,19 +113,32 @@ public class BST {
         }
         return node;
     }
-    static int tree_successor(Node node) throws NullPointerException{
-
-        System.out.println();
+    static Node tree_successor(Node node) throws NullPointerException{
         if (node.rightNode != null) {
-            return tree_min(node.rightNode).value;
+            return tree_min(node.rightNode);
         }
         Node par = node.parent;
         while (par != null && node == par.rightNode){
             node = par;
             par = par.parent;
         }
-        return par.value;
+        return par;
 
+    }
+    static Node tree_predecessor(Node node) throws Exception {
+        if (node == null) return null;
+        if (node.leftNode != null) {
+            return tree_max(node.leftNode);
+        }
+        Node par = node.parent;
+        while (par != null && node == par.leftNode) {
+            node = par;
+            par = par.parent;
+        }
+        if (par != null && node == par.rightNode) {
+            return par;
+        }
+        else throw new NotBoundException("Not found");
     }
 
     public static void main(String[] args) throws Exception {
@@ -143,6 +157,6 @@ public class BST {
         System.out.println(search(run(), 24));
         System.out.println(iterative_Tree_Search(run(), 24));
         System.out.println(tree_successor(run()));
-
+        System.out.println(tree_predecessor(run()));
     }
 }
