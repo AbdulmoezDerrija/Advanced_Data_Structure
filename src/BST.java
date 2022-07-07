@@ -21,9 +21,9 @@ public class BST {
             this.rightNode = null;
         }
     }
-
+    //recursive version of tree_insert
     public static void insertingBST(Node root, int value) {
-        if (root == null) return;
+        if (root == null)  root = new Node(value);
         if (root.value > value) {
             if (root.leftNode != null) insertingBST(root.leftNode, value);
             else {
@@ -39,6 +39,9 @@ public class BST {
                 root.rightNode.parent = root;
             }
         }
+    }
+    public static void tree_insert(Node node, int value) {
+
     }
     public static Node run() {
         Node root = new Node(list.get(0));
@@ -68,6 +71,7 @@ public class BST {
         inorderBST(root.rightNode);
         System.out.println(root.value + " ");
     }
+    //recursive version of tree_min
     static void  minBST(Node node) {
         if (node == null) return;
         if (node.leftNode !=  null) minBST(node.leftNode);
@@ -77,6 +81,7 @@ public class BST {
         while (node.leftNode != null) node = node.leftNode;
         return node;
     }
+    //recursive version of tree_max
     static void maxBST(Node node) {
         if (node == null) return;
         if (node.rightNode !=  null) maxBST(node.rightNode);
@@ -140,9 +145,32 @@ public class BST {
         }
         else throw new NotBoundException("Not found");
     }
+    static Node deleteNode(Node root, int key) {
+        //check if the tree is empty
+        if (root == null) return root;
+
+        // Otherwise, recursive down the tree
+        if (key < root.value) root.leftNode = deleteNode(root.leftNode, key);
+        else if (key > root.value) root.rightNode = deleteNode(root.rightNode, key);
+
+            // if key is sane as root's key, then this is the node to be deleted
+        else {
+            // node with only one child or no child
+            if (root.leftNode == null) return root.rightNode;
+            else if (root.rightNode == null) return root.leftNode;
+
+            // node with two children: Get the inorder. successor (smallest in the right subtree)
+            root.value = tree_min(root.rightNode).value;
+
+            // Delete the inorder successor
+            root.rightNode = deleteNode(root.rightNode, root.value);
+        }
+        return root;
+    }
+
 
     public static void main(String[] args) throws Exception {
-        list.add(32); list.add(41); list.add(24); list.add(58); list.add(46); list.add(27); list.add(12); list.add(14); list.add(13); list.add(15);
+        list.add(50); list.add(30); list.add(20); list.add(40); list.add(70); list.add(60); list.add(80);// list.add(14); list.add(13); list.add(15);
         System.out.println("Inorder sorting BST: ");
         inorderBST(run());
         System.out.println("Postorder sorting BST: ");
@@ -154,9 +182,11 @@ public class BST {
         System.out.println("max in BST: ");
         maxBST(run());
         System.out.println("searching for a specified with finding depth.");
-        System.out.println(search(run(), 24));
-        System.out.println(iterative_Tree_Search(run(), 24));
+        System.out.println(search(run(), 40));
+        System.out.println(iterative_Tree_Search(run(), 80));
         System.out.println(tree_successor(run()));
         System.out.println(tree_predecessor(run()));
+        postorderBST(deleteNode(run(), 50));
+
     }
 }
